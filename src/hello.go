@@ -2,22 +2,17 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 )
 
 func main() {
-	var nome string = "Douglas"
-	var versao = 1.1
+	exibeIntroducao()
+	exibeMenu()
+	comando := leComando()
 
-	fmt.Println("Olá sr", nome)
-	fmt.Println("Progama na versão:", versao)
-
-	fmt.Println("1 - Iniciar Monitoramento")
-	fmt.Println("2 - Exibir Logs")
-	fmt.Println("0 - Sair do Programa")
-
-	var comando int
 	//fmt.Scanf("%d", &comando)
-	fmt.Scan(&comando)
+
 	// if comando == 1 {
 	// 	fmt.Println("Iniciando o monitoramento..")
 	// } else if comando == 2 {
@@ -30,13 +25,43 @@ func main() {
 
 	switch comando {
 	case 1:
-		fmt.Println("Iniciando o monitoramento..")
+		iniciarMonitoramento()
 	case 2:
 		fmt.Println("Exibindo os logs")
 	case 0:
 		fmt.Println("Saindo do programa")
+		os.Exit(0)
 	default:
-		fmt.Println("Nenhuma opção conhecida")
+		fmt.Println("Comando desconhecido")
+		os.Exit(-1)
 	}
+
+}
+func leComando() int {
+	var comandoLido int
+	fmt.Scan(&comandoLido)
+	return comandoLido
+}
+
+func exibeMenu() {
+	fmt.Println("1 - Iniciar Monitoramento")
+	fmt.Println("2 - Exibir Logs")
+	fmt.Println("0 - Sair do Programa")
+}
+
+func exibeIntroducao() {
+	var nome string = "Douglas"
+	var versao = 1.1
+
+	fmt.Println("Olá sr", nome)
+	fmt.Println("Progama na versão:", versao)
+}
+
+func iniciarMonitoramento() {
+	fmt.Println("Iniciando o monitoramento..")
+	site := "https://www.alura.com.br"
+	resp, error := http.Get(site)
+	fmt.Println(resp)
+	fmt.Println(error)
 
 }
