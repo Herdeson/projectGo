@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
-	"bufio"
 )
 
 const monitoramentos = 3
@@ -55,7 +57,7 @@ func exibeIntroducao() {
 func iniciarMonitoramento() {
 	fmt.Println("")
 	fmt.Println("Iniciando o monitoramento..")
-	sites := []string{"https://random-status-code.herokuapp.com", "https://www.alura.com.br", "https://www.caelum.com.br"}
+	sites := leSitesArquivo()
 
 	for i := 0; i <= monitoramentos; i++ {
 		for _, item := range sites {
@@ -81,25 +83,26 @@ func testaSite(site string) {
 	}
 }
 
-func leSitesArquivo() [] string{
+func leSitesArquivo() []string {
 	var sites []string
-	arquivo, err := os.Open("..\sites.txt")
+	path := "C:\\Users\\Hederson\\Documents\\DEV\\Golang\\projectGo\\sites.txt"
+	arquivo, err := os.Open(path)
 
 	if err != nil {
 		fmt.Println("Apresentou o seguinte erro:", err)
 	}
 	leitor := bufio.NewReader(arquivo)
 	for {
-		linha, err:= leitor.ReadString('\n')
+		linha, err := leitor.ReadString('\n')
 		linha = strings.TrimSpace(linha)
 
-		sites.append(linha)
+		sites = append(sites, linha)
 
-		if err == io.EOF
+		if err == io.EOF {
+			break
+		}
 	}
+	arquivo.Close()
 
-	arquivo.close()
 	return sites
-
-
 }
