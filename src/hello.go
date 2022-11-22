@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"bufio"
 )
 
 const monitoramentos = 3
@@ -68,10 +69,37 @@ func iniciarMonitoramento() {
 }
 
 func testaSite(site string) {
-	resp, _ := http.Get(site)
+	resp, err := http.Get(site)
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro:", err)
+	}
 	if resp.StatusCode == 200 {
 		fmt.Println("Site:", site, "Carregado com sucesso")
 	} else {
 		fmt.Println("Site:", site, "Está com problemas")
 	}
+}
+
+func leSitesArquivo() [] string{
+	var sites []string
+	arquivo, err := os.Open("..\sites.txt")
+
+	if err != nil {
+		fmt.Println("Apresentou o seguinte erro:", err)
+	}
+	leitor := bufio.NewReader(arquivo)
+	for {
+		linha, err:= leitor.ReadString('\n')
+		linha = strings.TrimSpace(linha)
+
+		sites.append(linha)
+
+		if err == io.EOF
+	}
+
+	arquivo.close()
+	return sites
+
+
 }
