@@ -8,6 +8,10 @@ import (
 	"os"
 	"strings"
 	"time"
+	"path/filepath"
+	"strconv"
+
+	
 )
 
 const monitoramentos = 3
@@ -23,6 +27,7 @@ func main() {
 		case 1:
 			iniciarMonitoramento()
 		case 2:
+			imprimeLogs()
 			fmt.Println("Exibindo os logs")
 		case 0:
 			fmt.Println("Saindo do programa")
@@ -78,19 +83,26 @@ func testaSite(site string) {
 	}
 	if resp.StatusCode == 200 {
 		fmt.Println("Site:", site, "Carregado com sucesso")
+		registraLog(site, true)
 	} else {
 		fmt.Println("Site:", site, "Está com problemas")
+		registraLog(site, false)
 	}
 }
 
 func leSitesArquivo() []string {
 	var sites []string
-	path := "C:\\Users\\Hederson\\Documents\\DEV\\Golang\\projectGo\\sites.txt"
-	arquivo, err := os.Open(path)
+	file := "sites.txt"
+	full_path, err := filepath.Abs(file)
+	if err != nil {
+		fmt.Println("Apresentou o seguinte erro:", err)
+	}
+	arquivo, err := os.Open(full_path) // Abrindo arquivo de forma tradicional
 
 	if err != nil {
 		fmt.Println("Apresentou o seguinte erro:", err)
 	}
+
 	leitor := bufio.NewReader(arquivo)
 	for {
 		linha, err := leitor.ReadString('\n')
@@ -106,3 +118,18 @@ func leSitesArquivo() []string {
 
 	return sites
 }
+
+func registraLog(site string, status bool) {
+
+    arquivo, err := os.OpenFile("log.txt", os.O_CREATE|os.O_RDWR | os.O_APPEND, 0666) // Se nao tiver arquivo e criado
+
+    if err != nil {
+        fmt.Println("Ocorreu um erro:", err)
+    }
+	
+
+    arquivo.WriteString( time.Now().Format("02/01/2006 15:04:05") + " - " + site + " - online: " + strconv. FormatBool(status)+ "\n")
+
+    arquivo.Close()
+}
+
